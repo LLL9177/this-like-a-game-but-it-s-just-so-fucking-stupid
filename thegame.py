@@ -103,7 +103,6 @@ class Note:
         self.screen.blit(hint_surf, hint_rect)
 
 # --- SpriteAnimator class ---
-import pygame as pg
 
 class SpriteAnimator:
     def __init__(self, sprite_sheet_path, rows, cols, scale=1, frame_delay=200, offset_x=0, offset_y=0):
@@ -294,6 +293,7 @@ def build_level(current_level, current_direction):
         level_surface.blit(house_floor_texture, (947, 635))
         level_surface.blit(house_floor_texture, (959, 635))
         level_surface.blit(house_floor_texture, (1729, 424))
+        level_surface.blit(house_floor_texture, (1729, 635))
 
         # define hitboxes separately (world coordinates, not tied to drawing)
         hitboxes = {
@@ -308,6 +308,9 @@ def build_level(current_level, current_direction):
         }
 
         if current_direction == 'd':
+            level_surface.blit(house_floor_texture, (1400, 424))
+            level_surface.blit(house_floor_texture, (1400, 635))
+
             hitboxes = {
                 "walls": [
                     pg.Rect(929, 40, interior_wall_texture.get_width(), interior_wall_texture.get_height()-75),
@@ -317,7 +320,9 @@ def build_level(current_level, current_direction):
                     pg.Rect(310, 200, 20, 900),
                 ]
             }
-        
+    
+    elif current_level == 3:
+        level_surface = pg.Surface((1920, 1080))
     
     return level_surface, hitboxes
 
@@ -450,10 +455,19 @@ def build_furniture(direction, current_level):
                 
             }
         elif direction == 'a':
-            
+            furniture_surface.blit(bedside_table_1_shelf, (850, 320))
 
             furniture_hitboxes = {
-                
+                "shelf_3": [
+                    pg.Rect(850, 320, bedside_table_11_shelf.get_width(), bedside_table_11_shelf.get_height()-130),
+                    pg.Rect(890, 415, 112, 40),
+                    bedside_table_11_shelf,
+                    (850, 320),
+                    'key',
+                    (930, 420),
+                    '5',
+                    True # or idk, think about it
+                ]
             }
     elif current_level == 1:
         furniture_surface = pg.Surface((2200, 1080), pg.SRCALPHA)
@@ -477,7 +491,7 @@ def build_furniture(direction, current_level):
                 "door2": [
                     pg.Rect(1050, 180, door_image.get_width()+100, door_image.get_height()+100),
                     door_opened_image,
-                    (1100, 230),
+                    (100, 230),
                     True,
                     '3',
                     'door',
@@ -511,9 +525,32 @@ def build_furniture(direction, current_level):
                 ]
             }    
         elif direction == 'd':
+            furniture_surface.blit(door_image, (1900, 230))
 
             furniture_hitboxes = {
-                
+                "door_locked2": [
+                    pg.Rect(1850, 180, door_image.get_width()+100, door_image.get_height()+100),
+                    door_opened_image,
+                    (1900, 230),
+                    False,
+                    '3',
+                    'door',
+                    4,
+                    'lock',
+                    (2010, 325),
+                    "shelf_3",
+                    '5'
+                ],
+                # "shelf_3": [
+                #     pg.Rect(0, 0, 0, 0),
+                #     pg.Rect(0, 0, 0, 0),
+                #     bedside_table_11_shelf,
+                #     (-100, -100),
+                #     'key',
+                #     (-100, -100),
+                #     '5',
+                #     True # or idk, think about it
+                # ]
             }
         elif direction == 's':
             furniture_hitboxes = {
@@ -523,6 +560,34 @@ def build_furniture(direction, current_level):
             furniture_hitboxes = {
                 
             }
+    elif current_direction == 3:
+        furniture_surface = pg.Surface((1920, 1080), pg.SRCALPHA)
+
+        furniture_hitboxes = {
+            "door_locked2": [
+                    pg.Rect(0, 0, 0, 0),
+                    door_opened_image,
+                    (-100, -100),
+                    False,
+                    '3',
+                    'door',
+                    4,
+                    'lock',
+                    (-100, -100),
+                    "shelf_3",
+                    '5'
+                ],
+            "shelf_3": [
+                    pg.Rect(100, 320, bedside_table_1_shelf.get_width, bedside_table_1_shelf.get_height()-130),
+                    pg.Rect(200, 320),
+                    bedside_table_11_shelf,
+                    (100, 320),
+                    'key',
+                    (100, 320),
+                    '5',
+                    True # or idk, think about it
+                ]
+        }
 
     return furniture_surface, furniture_hitboxes
 
@@ -563,14 +628,14 @@ def build_items(direction, current_level):
                 'item_note2': [pg.Rect(570, 230, 250, 200)]
             }
         elif direction == 'a':
-            items_surface.blit(note_item, (900, 350))
+
 
             items_hitboxes = {
-                'item_note3': [pg.Rect(770, 230, 250, 200)]
+
             }
 
     if current_level == 1:
-        items_surface = pg.Surface((1920, 1080), pg.SRCALPHA)
+        items_surface = pg.Surface((2200, 1080), pg.SRCALPHA)
 
         if direction == 'w':
             items_surface.blit(pg.transform.rotate(note_item, 56.0), (1200, 600))
@@ -644,7 +709,7 @@ def draw_debug_hitboxes():
 # Flags
 dir_w_avail = True
 dir_d_avail = True
-dir_a_avail = False
+dir_a_avail = True
 dir_s_avail = False
 
 # other stuff
@@ -677,22 +742,34 @@ while running:
     # First, put all hidden notes into items_hitboxes
     for key, hitbox in hidden_notes:
         for obj in furniture_hitboxes.values():
-            if obj[5] == "note":
-                if checking_drawer:
-                    items_hitboxes[key] = hitbox
-                else:
-                    items_hitboxes.pop(key, None)
+            if obj[5] != 'door' and len(obj) > 12:
+                if key == obj[14]:
+                    if checking_drawer:
+                        items_hitboxes[key] = hitbox
+                    else:
+                        items_hitboxes.pop(key, None)
 
     # Then handle the drawer check
-    for obj in furniture_hitboxes.values():
-        if obj[5] != 'door':
-            m_collision = obj[1].collidepoint(mpos)
-            if m_collision and obj[7]:
+    for key, obj in furniture_hitboxes.items():
+        if not key.startswith("door"):
+            m_collision = obj[1].move(level_x, level_y).collidepoint(mpos)
+            print(f"Debug in CCD logic:\n\tmouse collision: {m_collision}\n\tchecking_drawer: {checking_drawer}\n\tRect: {obj[1]}\n\tFurniture hitboxes length: {len(furniture_hitboxes)}\n\n\tWhole object: {obj}\n")
+            if m_collision:
                 checking_drawer = True
                 break
-            elif not m_collision:
+            else:
                 checking_drawer = False
                 break
+
+    # Set door availability for key E event
+    # for key, obj in furniture_hitboxes.items():
+    #     if key.startswith("door"):
+    #         door_availiability = obj[3]
+    #         if not door_availiability and len(obj) > 7:
+    #             binded_item_id = obj[7]
+    #             if binded_item_id in taken_items:
+    #                 print("setting door_availiavility yo true for the key event logic")
+    #                 door_availability = True
 
     # --- Events ---
     for e in pg.event.get():
@@ -736,11 +813,10 @@ while running:
                         player_flipped = False
                     if e.key == pg.K_UP:
                         current_direction = 'w'
-                    if e.key == pg.K_DOWN:
+                    if e.key == pg.K_DOWN and dir_s_avail:
                         current_direction = 's'
-                    if e.key == pg.K_LEFT:
-                        if dir_a_avail:
-                            current_direction = 'a'
+                    if e.key == pg.K_LEFT and dir_a_avail:
+                        current_direction = 'a'
             elif current_direction == 's':
                 if not any(note.check_opened() for note in items_with_notesW.values()):
                     if e.key == pg.K_w: player_upM = True
@@ -782,34 +858,34 @@ while running:
                 player_hitbox = player_anim.get_hitbox(player_x, player_y)
 
                 for key, obj in furniture_hitboxes.items():
-                    if obj[5] == 'door':
+                    if key.startswith("door") and obj[3]: # and door_availibility
                         door_hitbox = obj[0]
                         opened_door_image = obj[1]
                         opened_door_image_position = obj[2]
                         door_avail = obj[3]
                         door_id = obj[4]
                         going_to_level_id = obj[6]
-                        if player_hitbox.colliderect(door_hitbox):
+
+                        if player_hitbox.colliderect(door_hitbox.move(level_x, level_y)):
                             current_level = going_to_level_id
                             
 
                 for key, obj_list in items_hitboxes.items():
-                    for obj in obj_list:
-                        if player_hitbox.colliderect(obj.move(level_x, level_y)):
-                            if current_direction == 'w':
-                                if key in items_with_notesW:
-                                    items_with_notesW[key].toggle()
-                            elif current_direction == 'd':
-                                if key in items_with_notesD:
-                                    items_with_notesD[key].toggle()
-                            elif current_direction == 's':
-                                if key in items_with_notesS:
-                                    items_with_notesS[key].toggle()
-                            elif current_direction == 'a':
-                                if key in items_with_notesA:
-                                    items_with_notesA[key].toggle()
+                    if player_hitbox.colliderect(obj_list[0].move(level_x, level_y)):
+                        if current_direction == 'w':
+                            if key in items_with_notesW:
+                                items_with_notesW[key].toggle()
+                        elif current_direction == 'd':
+                            if key in items_with_notesD:
+                                items_with_notesD[key].toggle()
+                        elif current_direction == 's':
+                            if key in items_with_notesS:
+                                items_with_notesS[key].toggle()
+                        elif current_direction == 'a':
+                            if key in items_with_notesA:
+                                items_with_notesA[key].toggle()
 
-                            break  # stop after first hit
+                        break  # stop after first hit
 
         if e.type == pg.KEYUP:
             if e.key == pg.K_w: player_upM = False
@@ -953,10 +1029,19 @@ while running:
                 key_name = obj[10]
                 binded_item_id = obj[11]
 
-                # print(checking_drawer)
+                print("Debug:")
+                print(f"\tlock_name: {lock_name}")
+                print(f"\tchecking_drawer: {checking_drawer}")
+                # This just deletes the lock completely so it doesn't fucking draw it once and for all
+                if checking_drawer and lock_name == 'lock':
+                    lock_name = 'none'
+                    print("lock name setted to none")
+
                 # That's like blitting the lock image if the item is not used
-                if lock_name == 'lock' and binded_item_id not in used_items and not checking_drawer:
+                if binded_item_id not in used_items and lock_name == 'lock' and not checking_drawer:
+                    print('blitting the lock in drawer logic')
                     items_surface.blit(lock, lock_pos)
+
                 # This one is checking if the item was taken, so the drawer can be opened.
                 if binded_item_id in taken_items:
                     item_availability = True
@@ -966,7 +1051,6 @@ while running:
                 checking_drawer = True
 
                 if item_id not in taken_items and item_name == 'key': items_surface.blit(key_image, item_pos)
-                if item_id not in taken_items and item_name == 'lock': items_surface.blit(lock, item_pos)
 
                 if item_name == 'note': 
                     direction = obj[12]
@@ -1028,7 +1112,7 @@ while running:
                     if binded_item_id in taken_items:
                         door_availability = True
 
-                    if binded_item_id not in taken_items and not door_availability:
+                    if binded_item_id not in taken_items and not door_availability and not checking_drawer:
                         items_surface.blit(lock, lock_pos)
 
                 if player_hitbox.colliderect(door_hitbox.move(level_x, level_y)) and door_availability:
