@@ -751,25 +751,28 @@ while running:
 
     # Then handle the drawer check
     for key, obj in furniture_hitboxes.items():
+        checking_drawer = False
         if not key.startswith("door"):
             m_collision = obj[1].move(level_x, level_y).collidepoint(mpos)
-            print(f"Debug in CCD logic:\n\tmouse collision: {m_collision}\n\tchecking_drawer: {checking_drawer}\n\tRect: {obj[1]}\n\tFurniture hitboxes length: {len(furniture_hitboxes)}\n\n\tWhole object: {obj}\n")
+
+            # print(f"Debug in CCD logic:\n\tmouse collision: {m_collision}\n\tchecking_drawer: {checking_drawer}\n\tRect: {obj[1]}\n\tFurniture hitboxes length: {len(furniture_hitboxes)}\n\n\tWhole object: {obj}\n")
+
             if m_collision:
                 checking_drawer = True
                 break
-            else:
-                checking_drawer = False
-                break
 
     # Set door availability for key E event
-    # for key, obj in furniture_hitboxes.items():
-    #     if key.startswith("door"):
-    #         door_availiability = obj[3]
-    #         if not door_availiability and len(obj) > 7:
-    #             binded_item_id = obj[7]
-    #             if binded_item_id in taken_items:
-    #                 print("setting door_availiavility yo true for the key event logic")
-    #                 door_availability = True
+    for key, obj in furniture_hitboxes.items():
+        if key.startswith("door"):
+            door_availiability = obj[3]
+            if not door_availiability and len(obj) > 7:
+                binded_item_id = obj[10]
+
+                # print(f"Debug in CDA:\n\tbinded_item_id: {binded_item_id}\n\tbinded_item_id in taken_items: {binded_item_id in taken_items}\n\ttaken_items: {taken_items}\n")
+
+                if binded_item_id in taken_items:
+                    # print("setting door_availiavility to true for the key event logic")
+                    door_availability = True
 
     # --- Events ---
     for e in pg.event.get():
@@ -866,9 +869,11 @@ while running:
                         door_id = obj[4]
                         going_to_level_id = obj[6]
 
+                        print(f"Debug in OPD:\n\tdoor_hitbox: {door_hitbox}\n\tdoor_avail: {door_avail}\n\t?hitbox: {player_hitbox.colliderect(door_hitbox.move(level_x, level_y))}\n\tgoing_to_level_id: {going_to_level_id}\n")
+
                         if player_hitbox.colliderect(door_hitbox.move(level_x, level_y)):
                             current_level = going_to_level_id
-                            
+                            break
 
                 for key, obj_list in items_hitboxes.items():
                     if player_hitbox.colliderect(obj_list[0].move(level_x, level_y)):
@@ -1029,17 +1034,16 @@ while running:
                 key_name = obj[10]
                 binded_item_id = obj[11]
 
-                print("Debug:")
-                print(f"\tlock_name: {lock_name}")
-                print(f"\tchecking_drawer: {checking_drawer}")
+                # print(f"Debug:\n\tlock_name: {lock_name}\n\tchecking_drawer: {checking_drawer}")
+                
                 # This just deletes the lock completely so it doesn't fucking draw it once and for all
                 if checking_drawer and lock_name == 'lock':
                     lock_name = 'none'
-                    print("lock name setted to none")
+                    # print("lock name setted to none")
 
                 # That's like blitting the lock image if the item is not used
-                if binded_item_id not in used_items and lock_name == 'lock' and not checking_drawer:
-                    print('blitting the lock in drawer logic')
+                if binded_item_id not in used_items and lock_name == 'lock':
+                    # print('blitting the lock in drawer logic')
                     items_surface.blit(lock, lock_pos)
 
                 # This one is checking if the item was taken, so the drawer can be opened.
@@ -1091,7 +1095,7 @@ while running:
                             
                     if len(obj) > 8:
                         lock_logic(furniture_hitboxes, lock_name, key_name, binded_item_id)
-        
+                    
         # open the dooooor
         for obj in furniture_hitboxes.values():
             if obj[5] == 'door':
@@ -1112,7 +1116,7 @@ while running:
                     if binded_item_id in taken_items:
                         door_availability = True
 
-                    if binded_item_id not in taken_items and not door_availability and not checking_drawer:
+                    if binded_item_id not in taken_items and binded_item_id not in used_items and not door_availability:
                         items_surface.blit(lock, lock_pos)
 
                 if player_hitbox.colliderect(door_hitbox.move(level_x, level_y)) and door_availability:
