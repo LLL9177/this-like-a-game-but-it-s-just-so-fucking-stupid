@@ -320,9 +320,38 @@ def build_level(current_level, current_direction):
                     pg.Rect(310, 200, 20, 900),
                 ]
             }
-    
-    elif current_level == 3:
+    elif current_level == 2:
         level_surface = pg.Surface((1920, 1080))
+        if current_direction == 'w':
+            level_surface.blit(interior_wall_texture, (305+1000, 40))
+            level_surface.blit(interior_wall_texture, (929+1000, 40))
+
+            hitboxes = {
+                "walls": []
+            }
+    elif current_level == 3:
+        level_surface = pg.Surface((1920+2575, 1080))
+
+        if current_direction == 'w':
+            level_surface.blit(interior_wall_texture, (305+1000, 40))
+            level_surface.blit(interior_wall_texture, (929+1000, 40))
+
+            level_surface.blit(house_floor_texture, (329+1000, 424))
+            level_surface.blit(house_floor_texture, (947+1000, 424))
+            level_surface.blit(house_floor_texture, (959+1000, 424))
+            level_surface.blit(house_floor_texture, (329+1000, 635))
+            level_surface.blit(house_floor_texture, (947+1000, 635))
+            level_surface.blit(house_floor_texture, (959+1000, 635))
+
+        hitboxes = {
+            "walls": [
+                pg.Rect(929+1000, 40, interior_wall_texture.get_width(), interior_wall_texture.get_height()-75),
+                pg.Rect(305+1000, 40, interior_wall_texture.get_width(), interior_wall_texture.get_height()-75),
+                pg.Rect(+1000, 850, 2200, 20),
+                pg.Rect(310+1000, 200, 20, 900),
+                pg.Rect(1575+1000, 300, 200, interior_wall_texture.get_height()+200)
+            ]
+        }
     
     return level_surface, hitboxes
 
@@ -560,34 +589,82 @@ def build_furniture(direction, current_level):
             furniture_hitboxes = {
                 
             }
-    elif current_direction == 3:
+    elif current_level == 2:
+        furniture_surface = pg.Surface((1920, 1080), pg.SRCALPHA)
+        if current_direction == 'w':
+            furniture_surface.blit(bedside_table_1_shelf, (800, 320))
+
+            furniture_hitboxes = {
+                "shelf_4": [
+                    pg.Rect(800, 320, bedside_table_1_shelf.get_width(), bedside_table_1_shelf.get_height()-130),
+                    pg.Rect(840, 415, 112, 40),
+                    bedside_table_11_shelf,
+                    (800, 320),
+                    'note',
+                    (880, 420),
+                    '7',
+                    True,
+                    'none',
+                    'none',
+                    'none',
+                    'none',
+                    'w',
+                    note_item,
+                    'hidden_note7'
+                ]
+            }
+        if current_direction == 'a':
+
+            furniture_hitboxes = {}
+        if current_direction == 's':
+
+            furniture_hitboxes = {}
+        if current_direction == 'd':
+
+            furniture_hitboxes = {}
+
+    elif current_level == 3:
         furniture_surface = pg.Surface((1920, 1080), pg.SRCALPHA)
 
-        furniture_hitboxes = {
-            "door_locked2": [
-                    pg.Rect(0, 0, 0, 0),
-                    door_opened_image,
-                    (-100, -100),
+        if direction == "w":
+            furniture_surface.blit(door_image, (1659, 230))
+
+            furniture_hitboxes = {
+                "door5": [
+                    pg.Rect(1609, 180, door_image.get_width()+100, door_image.get_height()+100),
+                    opened_door_image,
+                    (1659, 230),
+                    True,
+                    '5',
+                    'door',
+                    1
+                ]
+            }
+
+        elif direction == "s":
+
+            furniture_hitboxes = {
+
+            }
+
+        elif direction == 'd':
+            furniture_surface.blit(door_image, (1800, 230))
+
+            furniture_hitboxes = {
+                "door_locked3": [
+                    pg.Rect(1750, 180, door_image.get_width()+100, door_image.get_height()+100),
+                    opened_door_image,
+                    (1800, 230),
                     False,
-                    '3',
+                    '6',
                     'door',
                     4,
                     'lock',
-                    (-100, -100),
-                    "shelf_3",
-                    '5'
-                ],
-            "shelf_3": [
-                    pg.Rect(100, 320, bedside_table_1_shelf.get_width, bedside_table_1_shelf.get_height()-130),
-                    pg.Rect(200, 320),
-                    bedside_table_11_shelf,
-                    (100, 320),
-                    'key',
-                    (100, 320),
-                    '5',
-                    True # or idk, think about it
+                    (1910, 325),
+                    "none",
+                    'unk'
                 ]
-        }
+            }
 
     return furniture_surface, furniture_hitboxes
 
@@ -634,14 +711,14 @@ def build_items(direction, current_level):
 
             }
 
-    if current_level == 1:
+    elif current_level == 1:
         items_surface = pg.Surface((2200, 1080), pg.SRCALPHA)
 
         if direction == 'w':
-            items_surface.blit(pg.transform.rotate(note_item, 56.0), (1200, 600))
+            items_surface.blit(pg.transform.rotate(note_item, 56.0), (910, 695))
 
             items_hitboxes = {
-                'item_note5': [pg.Rect(1090, 505, 250, 200)]
+                'item_note5': [pg.Rect(800, 600, 250, 200)]
             }
         elif direction == 'd':
             items_surface.blit(pg.transform.rotate(note_item, 234.0), (1200, 600))
@@ -659,6 +736,44 @@ def build_items(direction, current_level):
             items_hitboxes = {
                 
             }
+    
+    elif current_level == 2:
+        items_surface = pg.Surface((1920, 1080), pg.SRCALPHA)
+
+        if direction == 'w':
+            
+            items_hitboxes = {}
+        if direction == 'a':
+            
+            items_hitboxes = {}
+        if direction == 's':
+            
+            items_hitboxes = {}
+        if direction == 'd':
+            
+            items_hitboxes = {}
+    
+    elif current_level == 3:
+        items_surface = pg.Surface((3000, 1080), pg.SRCALPHA)
+
+        if direction == 'w':
+            items_surface.blit(note_item, (2500, 500))
+            
+            items_hitboxes = {
+                "item_note6": [pg.Rect(2370, 420, 250, 200)]
+            }
+        if direction == 'a':
+            
+            items_hitboxes = {}
+        if direction == 's':
+            items_surface.blit(note_item, (1930, 700))
+            
+            items_hitboxes = {
+                "item_note7": [pg.Rect(1800, 640, 250, 200)]
+            }
+        if direction == 'd':
+            
+            items_hitboxes = {}
 
     return items_surface, items_hitboxes
 
@@ -669,7 +784,9 @@ items_with_notesW = {
     "item_note": Note(screen, "Walking is a crazy proccess. <br>\tBut look at this guy. He just opened the game and already walks. <br> <br> Alr i'm kidding. Just leave the note and pess the right arrow."),
     "item_note4": Note(screen, "Well, at first, i wanted to make this thing work. But eventually this is shit idea cuz it takes too much RAM. So please play with that :("),
     "item_note5": Note(screen, "Ебать - Черный квадрат МаЛЕВичО!!<br>(ya znayu chto eto ne on)"),
-    "hidden_note2": Note(screen, "Literally changed my UI to German everywhere.")
+    "hidden_note2": Note(screen, "Literally changed my UI to German everywhere."),
+    "item_note6": Note(screen, "You got the dud hahahah :)\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\t\t\t\tQUICK"),
+    "hidden_note7": Note(screen, "Only UP is a game where while you are playing, you might just sell your pc to the window.")
 }
 
 items_with_notesD = {
@@ -678,7 +795,9 @@ items_with_notesD = {
     "item_note6": Note(screen, "Monsters don't care about you changing dimensions.")
 }
 
-items_with_notesS = {}
+items_with_notesS = {
+    "item_note7": Note(screen, "00110111 01000001 00100000 00110110 01000110 00100000 00110110 00110111 00100000 00110110 00111000 00100000 00110010 00110000 00100000 00110010 01000100 00100000 00110010 00110000 00100000 00110110 00110110 00100000 00110111 00110111 00100000 00110111 00110101 00100000 00110111 00110110 00100000 00110110 00111000")
+}
 
 items_with_notesA = {}
 
@@ -707,21 +826,23 @@ def draw_debug_hitboxes():
     pg.draw.rect(screen, (255, 255, 0), player_hitbox, 2)
 
 # Flags
-dir_w_avail = True
-dir_d_avail = True
+dir_w_avail = True # default
+dir_d_avail = True # default
 dir_a_avail = True
-dir_s_avail = False
+dir_s_avail = True
+checking_drawer = False
+current_drawer = None
+current_door_avail = False
 
 # other stuff
 taken_items = []
 used_items = []
 hidden_notes = [
     # ('hidden_note1', [pg.Rect(furniture_hitboxes['shelf_2'][5][0]-105, furniture_hitboxes['shelf_2'][5][1]-100, 250, 200)]) # And it's also has to be here.
-    ("hidden_note2", [pg.Rect(775, 320, 250, 200)])
+    ("hidden_note2", [pg.Rect(775, 320, 250, 200)]),
+    ("hidden_note7", [pg.Rect(775, 320, 250, 200)])
 ]
-checking_drawer = False
-current_drawer = None
-level_list = [0, 1, 2]
+level_list = [0, 1, 2, 3, 4]
 
 # --- Player state ---
 player_x, player_y = 900, 480
@@ -733,6 +854,7 @@ reached_edge_up = reached_edge_left = reached_edge_down = reached_edge_right = F
 # --- Game loop ---
 running = True
 while running:
+    print(player_x)
     dt = clock.tick(60)
     items_surface, items_hitboxes = build_items(current_direction, current_level)
     furniture_surface, furniture_hitboxes = build_furniture(current_direction, current_level)
@@ -773,6 +895,8 @@ while running:
                 if binded_item_id in taken_items:
                     # print("setting door_availiavility to true for the key event logic")
                     door_availability = True
+                    current_door_avail = True
+                    break
 
     # --- Events ---
     for e in pg.event.get():
@@ -860,8 +984,11 @@ while running:
             if e.key == pg.K_e:
                 player_hitbox = player_anim.get_hitbox(player_x, player_y)
 
+                # if current_level == 0 and current_direction == "d":
+                #     print(f"\nDoor_locked whole obj: {furniture_hitboxes["door_locked1"]}")
+
                 for key, obj in furniture_hitboxes.items():
-                    if key.startswith("door") and obj[3]: # and door_availibility
+                    if key.startswith("door") and (obj[3] or current_door_avail): # and door_availibility
                         door_hitbox = obj[0]
                         opened_door_image = obj[1]
                         opened_door_image_position = obj[2]
@@ -869,9 +996,10 @@ while running:
                         door_id = obj[4]
                         going_to_level_id = obj[6]
 
-                        print(f"Debug in OPD:\n\tdoor_hitbox: {door_hitbox}\n\tdoor_avail: {door_avail}\n\t?hitbox: {player_hitbox.colliderect(door_hitbox.move(level_x, level_y))}\n\tgoing_to_level_id: {going_to_level_id}\n")
+                        # print(f"Debug in OPD:\n\tdoor_hitbox: {door_hitbox}\n\tdoor_avail: {door_avail}\n\t?hitbox: {player_hitbox.colliderect(door_hitbox.move(level_x, level_y))}\n\tgoing_to_level_id: {going_to_level_id}\n\tcurrent_level: {current_level}\n")
 
                         if player_hitbox.colliderect(door_hitbox.move(level_x, level_y)):
+                            # print("teleporting to another room")
                             current_level = going_to_level_id
                             break
 
