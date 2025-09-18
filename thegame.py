@@ -246,7 +246,7 @@ notes_open = False
 toggled = False
 
 # --- Load textures ---
-current_level = 1
+current_level = 0
 house_wall_texture = pg.image.load("sprites/house_wall_texture_exterior.png")
 house_wall_texture = pg.transform.scale(house_wall_texture, (house_wall_texture.get_width()*6, house_wall_texture.get_height()*6))
 interior_wall_texture = pg.image.load("sprites/interior_wall_texture.png")
@@ -574,7 +574,12 @@ def build_furniture(direction, current_level):
                     True,
                     '4',
                     'door',
-                    3
+                    3,
+                    "blank",
+                    "blank",
+                    "blank",
+                    "blank",
+                    's'
                 ]
             }    
         elif direction == 'd':
@@ -884,8 +889,8 @@ def draw_debug_hitboxes():
 # Flags
 dir_w_avail = True # default
 dir_d_avail = True # default
-dir_a_avail = True
-dir_s_avail = True
+dir_a_avail = False
+dir_s_avail = False
 checking_drawer = False
 current_drawer = None
 current_door_avail = False
@@ -948,13 +953,15 @@ while running:
             if not door_availiability and len(obj) > 7:
                 binded_item_id = obj[10]
 
-                # print(f"Debug in CDA:\n\tbinded_item_id: {binded_item_id}\n\tbinded_item_id in taken_items: {binded_item_id in taken_items}\n\ttaken_items: {taken_items}\n")
+                print(f"Debug in CDA:\n\tbinded_item_id: {binded_item_id}\n\tbinded_item_id in taken_items: {binded_item_id in taken_items}\n\ttaken_items: {taken_items}\n")
 
                 if binded_item_id in taken_items:
-                    # print("setting door_availiavility to true for the key event logic")
+                    print("setting door_availiavility to true for the key event logic")
                     door_availability = True
                     current_door_avail = True
                     break
+
+                current_door_avail = False
 
         # print(f"Current door: {key}")
 
@@ -1054,11 +1061,21 @@ while running:
                         door_id = obj[4]
                         going_to_level_id = obj[6]
 
-                        # print(f"Debug in OPD:\n\tdoor_hitbox: {door_hitbox}\n\tdoor_avail: {door_avail}\n\t?hitbox: {player_hitbox.colliderect(door_hitbox.move(level_x, level_y))}\n\tgoing_to_level_id: {going_to_level_id}\n\tcurrent_level: {current_level}\n")
+                        # print(f"Debug in TTR:\n\tdoor_hitbox: {door_hitbox}\n\tdoor_avail: {door_avail}\n\t?hitbox: {player_hitbox.colliderect(door_hitbox.move(level_x, level_y))}\n\tgoing_to_level_id: {going_to_level_id}\n\tcurrent_level: {current_level}\n\tcurrent_door_avail: {current_door_avail}")
+                        # if len(obj) > 7:
+                        #     print(f"\nbinded_item_id = {obj[10]}")
 
-                        if player_hitbox.colliderect(door_hitbox.move(level_x, level_y)):
-                            # print(f"teleporting to room: {going_to_level_id}")
+                        if player_hitbox.colliderect(door_hitbox.move(level_x, level_y)): 
+                             # print(f"teleporting to room: {going_to_level_id}")
                             current_level = going_to_level_id
+                            if len(obj) == 12:
+                                what_right_to_give = obj[11]
+
+                                if what_right_to_give == 's':
+                                    dir_s_avail = True
+                                elif what_right_to_give == 'a':
+                                    dir_a_avail = True
+                            
                             break
 
                 for key, obj_list in items_hitboxes.items():
@@ -1294,16 +1311,17 @@ while running:
                 level_to_travel = obj[6]
 
                 if len(obj) > 7:
-                    lock_name = obj[7]
-                    lock_pos = obj[8]
-                    binded_furniture_name = obj[9]
-                    binded_item_id = obj[10]
+                    if obj[7] == "lock": # if lock name
+                        lock_name = obj[7]
+                        lock_pos = obj[8]
+                        binded_furniture_name = obj[9]
+                        binded_item_id = obj[10]
 
-                    if binded_item_id in taken_items:
-                        door_availability = True
+                        if binded_item_id in taken_items:
+                            door_availability = True
 
-                    if binded_item_id not in taken_items and binded_item_id not in used_items and not door_availability:
-                        items_surface.blit(lock, lock_pos)
+                        if binded_item_id not in taken_items and binded_item_id not in used_items and not door_availability:
+                            items_surface.blit(lock, lock_pos)
 
                 if player_hitbox.colliderect(door_hitbox.move(level_x, level_y)) and door_availability:
                     furniture_surface.blit(opened_door_image, opened_door_pos)
