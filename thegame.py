@@ -653,22 +653,8 @@ def build_furniture(direction, current_level):
             }
 
         elif direction == 'd':
-            furniture_surface.blit(door_image, (1800, 230))
 
             furniture_hitboxes = {
-                "door_locked3": [
-                    pg.Rect(1750, 180, door_image.get_width()+100, door_image.get_height()+100),
-                    opened_door_image,
-                    (1800, 230),
-                    False,
-                    '6',
-                    'door',
-                    4,
-                    'lock',
-                    (1910, 325),
-                    "none",
-                    'unk'
-                ]
             }
 
     elif current_level == 4:
@@ -786,23 +772,19 @@ def build_items(direction, current_level):
     
     elif current_level == 4:
         items_surface = pg.Surface((3000, 1080), pg.SRCALPHA)
+        items_hitboxes = {}
 
         if direction == 'w':
-            items_surface.blit(note_item, (2500, 500))
             
             items_hitboxes = {
                 
             }
         elif direction == 'a':
-            
-            items_hitboxes = {}
+            pass
         elif direction == 's':
-            items_surface.blit(note_item, (1930, 700))
-            
-            items_hitboxes = {}
+            pass
         elif direction == 'd':
-            
-            items_hitboxes = {}
+            pass
 
     return items_surface, items_hitboxes
 
@@ -815,20 +797,24 @@ items_with_notesW = {
     "item_note5": Note(screen, "Ебать - Черный квадрат МаЛЕВичО!!<br>(ya znayu chto eto ne on)"),
     "hidden_note2": Note(screen, "Literally changed my UI to German everywhere."),
     "item_note6": Note(screen, "You got the dud hahahah :)\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\t\t\t\tQUICK"),
-    "hidden_note7": Note(screen, "Only UP - is a game where while you are playing, you might just sell your pc to the window.") # First direction
+    "hidden_note7": Note(screen, "Only UP - is a game where while you are playing, you might just sell your pc to the window.") # FIRST DIRECTION
 }
 
 items_with_notesD = {
     "item_note1": Note(screen, "Congrats on reaching the right side of the room. Now you are in a trap. <br><br> Can you find a way to get back? <br><br><br><br><br> Maybe tho check the shelf?"),
     "hidden_note2": Note(screen, "Literally changed my UI to German everywhere."),
-    "item_note6": Note(screen, "Monsters don't care about you changing dimensions.")
+    "item_note6": Note(screen, "Monsters don't care about you changing dimensions."),
+    "hidden_note7": Note(screen, "Only UP - is a game where while you are playing, you might just sell your pc to the window.")
 }
 
 items_with_notesS = {
-    "item_note7": Note(screen, "00110111 01000001 00100000 00110110 01000110 00100000 00110110 00110111 00100000 00110110 00111000 00100000 00110010 00110000 00100000 00110010 01000100 00100000 00110010 00110000 00100000 00110110 00110110 00100000 00110111 00110111 00100000 00110111 00110101 00100000 00110111 00110110 00100000 00110110 00111000")
+    "item_note7": Note(screen, "00110111 01000001 00100000 00110110 01000110 00100000 00110110 00110111 00100000 00110110 00111000 00100000 00110010 00110000 00100000 00110010 01000100 00100000 00110010 00110000 00100000 00110110 00110110 00100000 00110111 00110111 00100000 00110111 00110101 00100000 00110111 00110110 00100000 00110110 00111000"),
+    "hidden_note7": Note(screen, "Only UP - is a game where while you are playing, you might just sell your pc to the window.")
 }
 
-items_with_notesA = {}
+items_with_notesA = {
+    "hidden_note7": Note(screen, "Only UP - is a game where while you are playing, you might just sell your pc to the window.")
+}
 
 # --- Debug: draw all hitboxes ---
 def draw_debug_hitboxes():
@@ -1019,7 +1005,7 @@ while running:
 
                 for key, obj in furniture_hitboxes.items():
                     if key.startswith("door") and (obj[3] or current_door_avail): # and door_availibility
-                        print(f"Whole door obj for key {key}: {obj}")
+                        # print(f"Whole door obj for key {key}: {obj}")
                         door_hitbox = obj[0]
                         opened_door_image = obj[1]
                         opened_door_image_position = obj[2]
@@ -1027,10 +1013,10 @@ while running:
                         door_id = obj[4]
                         going_to_level_id = obj[6]
 
-                        print(f"Debug in OPD:\n\tdoor_hitbox: {door_hitbox}\n\tdoor_avail: {door_avail}\n\t?hitbox: {player_hitbox.colliderect(door_hitbox.move(level_x, level_y))}\n\tgoing_to_level_id: {going_to_level_id}\n\tcurrent_level: {current_level}\n")
+                        # print(f"Debug in OPD:\n\tdoor_hitbox: {door_hitbox}\n\tdoor_avail: {door_avail}\n\t?hitbox: {player_hitbox.colliderect(door_hitbox.move(level_x, level_y))}\n\tgoing_to_level_id: {going_to_level_id}\n\tcurrent_level: {current_level}\n")
 
                         if player_hitbox.colliderect(door_hitbox.move(level_x, level_y)):
-                            print(f"teleporting to room: {going_to_level_id}")
+                            # print(f"teleporting to room: {going_to_level_id}")
                             current_level = going_to_level_id
                             break
 
