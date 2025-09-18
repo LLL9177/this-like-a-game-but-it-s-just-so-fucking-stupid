@@ -263,6 +263,7 @@ def build_level(current_level, current_direction):
         # draw all tiles onto this surface once
         level_surface.blit(interior_wall_texture, (929, 40))
         level_surface.blit(interior_wall_texture, (305, 40))
+
         level_surface.blit(house_floor_texture, (329, 424))
         level_surface.blit(house_floor_texture, (947, 424))
         level_surface.blit(house_floor_texture, (959, 424))
@@ -322,36 +323,58 @@ def build_level(current_level, current_direction):
             }
     elif current_level == 2:
         level_surface = pg.Surface((1920, 1080))
-        if current_direction == 'w':
-            level_surface.blit(interior_wall_texture, (305+1000, 40))
-            level_surface.blit(interior_wall_texture, (929+1000, 40))
+        level_surface.blit(interior_wall_texture, (250, 40))
+        level_surface.blit(interior_wall_texture, (624+250, 40))
 
-            hitboxes = {
-                "walls": []
-            }
+        level_surface.blit(house_floor_texture, (274, 424))
+        level_surface.blit(house_floor_texture, (878, 424))
+        level_surface.blit(house_floor_texture, (904, 424))
+
+        hitboxes = {
+            "walls": [
+                pg.Rect(250, 40, interior_wall_texture.get_width()*2, interior_wall_texture.get_height()-75),
+                pg.Rect(210, 400, 50, house_floor_texture.get_height()*2),
+                pg.Rect(1520, 400, 50, house_floor_texture.get_height()*2),
+                pg.Rect(210, 640, 1600, 50)
+            ]
+        }
     elif current_level == 3:
         level_surface = pg.Surface((1920+2575, 1080))
 
-        if current_direction == 'w':
-            level_surface.blit(interior_wall_texture, (305+1000, 40))
-            level_surface.blit(interior_wall_texture, (929+1000, 40))
+        level_surface.blit(interior_wall_texture, (305+1000, 40))
+        level_surface.blit(interior_wall_texture, (929+1000, 40))
 
-            level_surface.blit(house_floor_texture, (329+1000, 424))
-            level_surface.blit(house_floor_texture, (947+1000, 424))
-            level_surface.blit(house_floor_texture, (959+1000, 424))
-            level_surface.blit(house_floor_texture, (329+1000, 635))
-            level_surface.blit(house_floor_texture, (947+1000, 635))
-            level_surface.blit(house_floor_texture, (959+1000, 635))
+        level_surface.blit(house_floor_texture, (329+1000, 424))
+        level_surface.blit(house_floor_texture, (947+1000, 424))
+        level_surface.blit(house_floor_texture, (959+1000, 424))
+        level_surface.blit(house_floor_texture, (329+1000, 635))
+        level_surface.blit(house_floor_texture, (947+1000, 635))
+        level_surface.blit(house_floor_texture, (959+1000, 635))
 
         hitboxes = {
             "walls": [
                 pg.Rect(929+1000, 40, interior_wall_texture.get_width(), interior_wall_texture.get_height()-75),
                 pg.Rect(305+1000, 40, interior_wall_texture.get_width(), interior_wall_texture.get_height()-75),
-                pg.Rect(+1000, 850, 2200, 20),
+                pg.Rect(1000, 850, 2200, 20),
                 pg.Rect(310+1000, 200, 20, 900),
                 pg.Rect(1575+1000, 300, 200, interior_wall_texture.get_height()+200)
             ]
         }
+    
+    elif current_level == 4:
+        level_surface = pg.Surface((3000, 1080))
+
+        level_surface.blit(interior_wall_texture, (1605, 40))
+        level_surface.blit(interior_wall_texture, (2229, 40))
+
+        level_surface.blit(house_floor_texture, (329+1300, 424))
+        level_surface.blit(house_floor_texture, (947+1300, 424))
+        level_surface.blit(house_floor_texture, (959+1300, 424))
+        level_surface.blit(house_floor_texture, (329+1300, 635))
+        level_surface.blit(house_floor_texture, (947+1300, 635))
+        level_surface.blit(house_floor_texture, (959+1300, 635))
+
+        hitboxes = {"walls": []}
     
     return level_surface, hitboxes
 
@@ -500,6 +523,7 @@ def build_furniture(direction, current_level):
             }
     elif current_level == 1:
         furniture_surface = pg.Surface((2200, 1080), pg.SRCALPHA)
+        furniture_hitboxes = {}
 
         if direction == 'w':
             furniture_surface.blit(door_image, (400, 230))
@@ -581,16 +605,11 @@ def build_furniture(direction, current_level):
                 #     True # or idk, think about it
                 # ]
             }
-        elif direction == 's':
-            furniture_hitboxes = {
-                
-            }
-        elif direction == 'a':
-            furniture_hitboxes = {
-                
-            }
+
     elif current_level == 2:
         furniture_surface = pg.Surface((1920, 1080), pg.SRCALPHA)
+        furniture_hitboxes = {}
+
         if current_direction == 'w':
             furniture_surface.blit(bedside_table_1_shelf, (800, 320))
 
@@ -613,18 +632,10 @@ def build_furniture(direction, current_level):
                     'hidden_note7'
                 ]
             }
-        if current_direction == 'a':
-
-            furniture_hitboxes = {}
-        if current_direction == 's':
-
-            furniture_hitboxes = {}
-        if current_direction == 'd':
-
-            furniture_hitboxes = {}
 
     elif current_level == 3:
-        furniture_surface = pg.Surface((1920, 1080), pg.SRCALPHA)
+        furniture_surface = pg.Surface((2000, 1080), pg.SRCALPHA)
+        furniture_hitboxes = {}
 
         if direction == "w":
             furniture_surface.blit(door_image, (1659, 230))
@@ -639,12 +650,6 @@ def build_furniture(direction, current_level):
                     'door',
                     1
                 ]
-            }
-
-        elif direction == "s":
-
-            furniture_hitboxes = {
-
             }
 
         elif direction == 'd':
@@ -665,6 +670,10 @@ def build_furniture(direction, current_level):
                     'unk'
                 ]
             }
+
+    elif current_level == 4:
+        furniture_surface = pg.Surface((2000, 1080), pg.SRCALPHA)
+        furniture_hitboxes = {}
 
     return furniture_surface, furniture_hitboxes
 
@@ -774,6 +783,26 @@ def build_items(direction, current_level):
         if direction == 'd':
             
             items_hitboxes = {}
+    
+    elif current_level == 4:
+        items_surface = pg.Surface((3000, 1080), pg.SRCALPHA)
+
+        if direction == 'w':
+            items_surface.blit(note_item, (2500, 500))
+            
+            items_hitboxes = {
+                
+            }
+        elif direction == 'a':
+            
+            items_hitboxes = {}
+        elif direction == 's':
+            items_surface.blit(note_item, (1930, 700))
+            
+            items_hitboxes = {}
+        elif direction == 'd':
+            
+            items_hitboxes = {}
 
     return items_surface, items_hitboxes
 
@@ -786,7 +815,7 @@ items_with_notesW = {
     "item_note5": Note(screen, "Ебать - Черный квадрат МаЛЕВичО!!<br>(ya znayu chto eto ne on)"),
     "hidden_note2": Note(screen, "Literally changed my UI to German everywhere."),
     "item_note6": Note(screen, "You got the dud hahahah :)\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\t\t\t\tQUICK"),
-    "hidden_note7": Note(screen, "Only UP is a game where while you are playing, you might just sell your pc to the window.")
+    "hidden_note7": Note(screen, "Only UP - is a game where while you are playing, you might just sell your pc to the window.") # First direction
 }
 
 items_with_notesD = {
@@ -835,7 +864,7 @@ current_drawer = None
 current_door_avail = False
 
 # other stuff
-taken_items = []
+taken_items = ['5']
 used_items = []
 hidden_notes = [
     # ('hidden_note1', [pg.Rect(furniture_hitboxes['shelf_2'][5][0]-105, furniture_hitboxes['shelf_2'][5][1]-100, 250, 200)]) # And it's also has to be here.
@@ -854,7 +883,8 @@ reached_edge_up = reached_edge_left = reached_edge_down = reached_edge_right = F
 # --- Game loop ---
 running = True
 while running:
-    print(player_x)
+    # print(current_level)
+    # print(player_x)
     dt = clock.tick(60)
     items_surface, items_hitboxes = build_items(current_direction, current_level)
     furniture_surface, furniture_hitboxes = build_furniture(current_direction, current_level)
@@ -881,6 +911,7 @@ while running:
 
             if m_collision:
                 checking_drawer = True
+                # print(f"Current drawer: {key}")
                 break
 
     # Set door availability for key E event
@@ -897,6 +928,8 @@ while running:
                     door_availability = True
                     current_door_avail = True
                     break
+
+        # print(f"Current door: {key}")
 
     # --- Events ---
     for e in pg.event.get():
@@ -984,11 +1017,9 @@ while running:
             if e.key == pg.K_e:
                 player_hitbox = player_anim.get_hitbox(player_x, player_y)
 
-                # if current_level == 0 and current_direction == "d":
-                #     print(f"\nDoor_locked whole obj: {furniture_hitboxes["door_locked1"]}")
-
                 for key, obj in furniture_hitboxes.items():
                     if key.startswith("door") and (obj[3] or current_door_avail): # and door_availibility
+                        print(f"Whole door obj for key {key}: {obj}")
                         door_hitbox = obj[0]
                         opened_door_image = obj[1]
                         opened_door_image_position = obj[2]
@@ -996,10 +1027,10 @@ while running:
                         door_id = obj[4]
                         going_to_level_id = obj[6]
 
-                        # print(f"Debug in OPD:\n\tdoor_hitbox: {door_hitbox}\n\tdoor_avail: {door_avail}\n\t?hitbox: {player_hitbox.colliderect(door_hitbox.move(level_x, level_y))}\n\tgoing_to_level_id: {going_to_level_id}\n\tcurrent_level: {current_level}\n")
+                        print(f"Debug in OPD:\n\tdoor_hitbox: {door_hitbox}\n\tdoor_avail: {door_avail}\n\t?hitbox: {player_hitbox.colliderect(door_hitbox.move(level_x, level_y))}\n\tgoing_to_level_id: {going_to_level_id}\n\tcurrent_level: {current_level}\n")
 
                         if player_hitbox.colliderect(door_hitbox.move(level_x, level_y)):
-                            # print("teleporting to another room")
+                            print(f"teleporting to room: {going_to_level_id}")
                             current_level = going_to_level_id
                             break
 
