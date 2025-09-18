@@ -655,6 +655,19 @@ def build_furniture(direction, current_level):
         elif direction == 'd':
 
             furniture_hitboxes = {
+                "door_locked3": [
+                    pg.Rect(1750, 180, door_image.get_width()+100, door_image.get_height()+100),
+                    opened_door_image,
+                    (1800, 230),
+                    False,
+                    '6',
+                    'door',
+                    4,
+                    'lock',
+                    (1910, 325),
+                    "none",
+                    'unk'
+                ]
             }
 
     elif current_level == 4:
