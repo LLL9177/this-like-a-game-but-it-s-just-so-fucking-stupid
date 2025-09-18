@@ -7,5 +7,7 @@ note_7_cipher
 syrniki
 untitled
 sshkey
-sshkey.pub
+.sshkey.pub
+.sshkey
 commit_info.txt
+personal_access_token.txt
