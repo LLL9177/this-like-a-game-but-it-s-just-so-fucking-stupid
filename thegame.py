@@ -517,7 +517,7 @@ def build_furniture(direction, current_level):
                     (850, 320),
                     'key',
                     (930, 420),
-                    '9',
+                    '5',
                     True # or idk, think about it
                 ]
             }
@@ -544,7 +544,7 @@ def build_furniture(direction, current_level):
                 "door2": [
                     pg.Rect(1050, 180, door_image.get_width()+100, door_image.get_height()+100),
                     door_opened_image,
-                    (1100, 230),
+                    (100, 230),
                     True,
                     '3',
                     'door',
@@ -592,18 +592,18 @@ def build_furniture(direction, current_level):
                     'lock',
                     (2010, 325),
                     "shelf_3",
-                    '9'
+                    '5'
                 ],
-                "shelf_3": [
-                    pg.Rect(0, 0, 0, 0),
-                    pg.Rect(0, 0, 0, 0),
-                    bedside_table_11_shelf,
-                    (-100, -100),
-                    'key',
-                    (-100, -100),
-                    '9',
-                    True # or idk, think about it
-                ]
+                # "shelf_3": [
+                #     pg.Rect(0, 0, 0, 0),
+                #     pg.Rect(0, 0, 0, 0),
+                #     bedside_table_11_shelf,
+                #     (-100, -100),
+                #     'key',
+                #     (-100, -100),
+                #     '5',
+                #     True # or idk, think about it
+                # ]
             }
 
     elif current_level == 2:
@@ -612,7 +612,6 @@ def build_furniture(direction, current_level):
 
         if current_direction == 'w':
             furniture_surface.blit(bedside_table_1_shelf, (800, 320))
-            furniture_surface.blit(door_image, (1100, 230))
 
             furniture_hitboxes = {
                 "shelf_4": [
@@ -631,31 +630,6 @@ def build_furniture(direction, current_level):
                     'w',
                     note_item,
                     'hidden_note7'
-                ],
-                "door5": [
-                    pg.Rect(1050, 180, door_image.get_width()+100, door_image.get_height()+100),
-                    opened_door_image,
-                    (1100, 230),
-                    True,
-                    '8',
-                    "door",
-                    1
-                ]
-            }
-        
-        elif current_direction == 's':
-            furniture_surface.blit(bedside_table_1_shelf, (800, 320))
-
-            furniture_hitboxes = {
-                "shelf_5": [
-                    pg.Rect(800, 320, bedside_table_1_shelf.get_width(), bedside_table_1_shelf.get_height()-130),
-                    pg.Rect(840, 415, 112, 40),
-                    bedside_table_11_shelf,
-                    (800, 320),
-                    'key',
-                    (880, 420),
-                    '10',
-                    True
                 ]
             }
 
@@ -679,7 +653,6 @@ def build_furniture(direction, current_level):
             }
 
         elif direction == 'd':
-            furniture_surface.blit(door_image, (1800, 230))
 
             furniture_hitboxes = {
                 "door_locked3": [
@@ -693,8 +666,7 @@ def build_furniture(direction, current_level):
                     'lock',
                     (1910, 325),
                     "none",
-                    "shelf_3",
-                    '10' # key is in room id 2
+                    'unk'
                 ]
             }
 
@@ -891,7 +863,7 @@ current_drawer = None
 current_door_avail = False
 
 # other stuff
-taken_items = []
+taken_items = ['5']
 used_items = []
 hidden_notes = [
     # ('hidden_note1', [pg.Rect(furniture_hitboxes['shelf_2'][5][0]-105, furniture_hitboxes['shelf_2'][5][1]-100, 250, 200)]) # And it's also has to be here.
