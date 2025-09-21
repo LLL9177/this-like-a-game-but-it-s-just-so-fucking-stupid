@@ -854,7 +854,8 @@ items_with_notesW = {
     "item_note5": Note(screen, "Ебать - Черный квадрат МаЛЕВичО!!<br>(ya znayu chto eto ne on)"),
     "hidden_note2": Note(screen, "Literally changed my UI to German everywhere."),
     "item_note6": Note(screen, "You got the dud hahahah :)\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\t\t\t\tQUICK"),
-    "hidden_note7": Note(screen, "Only UP - is a game where while you are playing, you might just sell your pc to the window.") # FIRST DIRECTION
+    "hidden_note7": Note(screen, "Only UP - is a game where while you are playing, you might just sell your pc to the window."), # FIRST DIRECTION
+    "item_note8": Note(screen, "Try to press left-arrow key now.\n\n\n\n\n\t\t\t\tCOME ON! ESCAPE NOW!!!\n\nGrap the key in the tutorial room. And please hurry up unitll they get there!!")
 }
 
 items_with_notesD = {
@@ -867,11 +868,13 @@ items_with_notesD = {
 
 items_with_notesS = {
     "item_note7": Note(screen, "00110111 01000001 00100000 00110110 01000110 00100000 00110110 00110111 00100000 00110110 00111000 00100000 00110010 00110000 00100000 00110010 01000100 00100000 00110010 00110000 00100000 00110110 00110110 00100000 00110111 00110111 00100000 00110111 00110101 00100000 00110111 00110110 00100000 00110110 00111000"),
-    "hidden_note7": Note(screen, "Only UP - is a game where while you are playing, you might just sell your pc to the window.")
+    "hidden_note7": Note(screen, "Only UP - is a game where while you are playing, you might just sell your pc to the window."),
+    "item_note8": Note(screen, "Try to press left-arrow key now.\n\n\n\n\n\t\t\t\tCOME ON! ESCAPE NOW!!!\n\nGrap the key in the tutorial room. And please hurry up unitll they get there!!")
 }
 
 items_with_notesA = {
-    "hidden_note7": Note(screen, "Only UP - is a game where while you are playing, you might just sell your pc to the window.")
+    "hidden_note7": Note(screen, "Only UP - is a game where while you are playing, you might just sell your pc to the window."),
+    "item_note8": Note(screen, "Try to press left-arrow key now.\n\n\n\n\n\t\t\t\tCOME ON! ESCAPE NOW!!!\n\nGrap the key in the tutorial room. And please hurry up unitll they get there!!")
 }
 
 # --- Debug: draw all hitboxes ---
