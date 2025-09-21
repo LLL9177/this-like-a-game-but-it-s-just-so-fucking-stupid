@@ -246,13 +246,17 @@ notes_open = False
 toggled = False
 
 # --- Load textures ---
-current_level = 0
+current_level = 4
 house_wall_texture = pg.image.load("sprites/house_wall_texture_exterior.png")
 house_wall_texture = pg.transform.scale(house_wall_texture, (house_wall_texture.get_width()*6, house_wall_texture.get_height()*6))
 interior_wall_texture = pg.image.load("sprites/interior_wall_texture.png")
 interior_wall_texture = pg.transform.scale(interior_wall_texture, (interior_wall_texture.get_width()*6, interior_wall_texture.get_height()*6))
 house_floor_texture = pg.image.load("sprites/house_floor_texture.png")
 house_floor_texture = pg.transform.scale(house_floor_texture, (house_floor_texture.get_width()*6, house_floor_texture.get_height()*6))
+bugged_wall_texture = pg.image.load("sprites/bugged_wall.png")
+bugged_wall_texture = pg.transform.scale(bugged_wall_texture, (bugged_wall_texture.get_width()*6, bugged_wall_texture.get_height()*6))
+bugged_floor_texture = pg.image.load("sprites/bugged_floor.png")
+bugged_floor_texture = pg.transform.scale(bugged_floor_texture, (bugged_floor_texture.get_width()*6, bugged_floor_texture.get_height()*6))
 
 # --- Build level into one surface ---
 def build_level(current_level, current_direction):
@@ -364,17 +368,19 @@ def build_level(current_level, current_direction):
     elif current_level == 4:
         level_surface = pg.Surface((3000, 1080))
 
-        level_surface.blit(interior_wall_texture, (1605, 40))
-        level_surface.blit(interior_wall_texture, (2229, 40))
+        level_surface.blit(bugged_wall_texture, (1605, 40))
+        level_surface.blit(bugged_wall_texture, (2229, 40))
 
-        level_surface.blit(house_floor_texture, (329+1300, 424))
-        level_surface.blit(house_floor_texture, (947+1300, 424))
-        level_surface.blit(house_floor_texture, (959+1300, 424))
-        level_surface.blit(house_floor_texture, (329+1300, 635))
-        level_surface.blit(house_floor_texture, (947+1300, 635))
-        level_surface.blit(house_floor_texture, (959+1300, 635))
+        level_surface.blit(bugged_floor_texture, (329+1300, 424))
+        level_surface.blit(bugged_floor_texture, (947+1300, 424))
+        level_surface.blit(bugged_floor_texture, (959+1300, 424))
+        level_surface.blit(bugged_floor_texture, (329+1300, 635))
+        level_surface.blit(bugged_floor_texture, (947+1300, 635))
+        level_surface.blit(bugged_floor_texture, (959+1300, 635))
 
-        hitboxes = {"walls": []}
+        hitboxes = {"walls": [
+
+        ]}
     
     return level_surface, hitboxes
 
@@ -697,7 +703,6 @@ def build_furniture(direction, current_level):
                     4,
                     'lock',
                     (1910, 325),
-                    "none",
                     "shelf_3",
                     '10' # key is in room id 2
                 ]
@@ -705,7 +710,20 @@ def build_furniture(direction, current_level):
 
     elif current_level == 4:
         furniture_surface = pg.Surface((2000, 1080), pg.SRCALPHA)
-        furniture_hitboxes = {}
+
+        furniture_surface.blit(door_image, (1800, 230))
+
+        furniture_hitboxes = {
+            "door6": [
+                pg.Rect(1750, 180, door_image.get_width()+100, door_image.get_height()+100),
+                door_opened_image,
+                (1800, 230),
+                True,
+                '7',
+                "door",
+                3
+            ]
+        }
 
     return furniture_surface, furniture_hitboxes
 
@@ -818,19 +836,12 @@ def build_items(direction, current_level):
     
     elif current_level == 4:
         items_surface = pg.Surface((3000, 1080), pg.SRCALPHA)
-        items_hitboxes = {}
 
-        if direction == 'w':
-            
-            items_hitboxes = {
-                
-            }
-        elif direction == 'a':
-            pass
-        elif direction == 's':
-            pass
-        elif direction == 'd':
-            pass
+        items_surface.blit(note_item, (1850, 800))
+
+        items_hitboxes = {
+            "item_note8": [pg.Rect(1720, 720, 250, 200)]
+        }
 
     return items_surface, items_hitboxes
 
@@ -850,7 +861,8 @@ items_with_notesD = {
     "item_note1": Note(screen, "Congrats on reaching the right side of the room. Now you are in a trap. <br><br> Can you find a way to get back? <br><br><br><br><br> Maybe tho check the shelf?"),
     "hidden_note2": Note(screen, "Literally changed my UI to German everywhere."),
     "item_note6": Note(screen, "Monsters don't care about you changing dimensions."),
-    "hidden_note7": Note(screen, "Only UP - is a game where while you are playing, you might just sell your pc to the window.")
+    "hidden_note7": Note(screen, "Only UP - is a game where while you are playing, you might just sell your pc to the window."),
+    "item_note8": Note(screen, "Try to press left-arrow key now.\n\n\n\n\n\t\t\t\tCOME ON! ESCAPE NOW!!!\n\nGrap the key in the tutorial room. And please hurry up unitll they get there!!")
 }
 
 items_with_notesS = {
@@ -896,7 +908,7 @@ current_drawer = None
 current_door_avail = False
 
 # other stuff
-taken_items = []
+taken_items = ['10']
 used_items = []
 hidden_notes = [
     # ('hidden_note1', [pg.Rect(furniture_hitboxes['shelf_2'][5][0]-105, furniture_hitboxes['shelf_2'][5][1]-100, 250, 200)]) # And it's also has to be here.
