@@ -246,7 +246,7 @@ notes_open = False
 toggled = False
 
 # --- Load textures ---
-current_level = 4
+current_level = 0
 house_wall_texture = pg.image.load("sprites/house_wall_texture_exterior.png")
 house_wall_texture = pg.transform.scale(house_wall_texture, (house_wall_texture.get_width()*6, house_wall_texture.get_height()*6))
 interior_wall_texture = pg.image.load("sprites/interior_wall_texture.png")
@@ -379,7 +379,10 @@ def build_level(current_level, current_direction):
         level_surface.blit(bugged_floor_texture, (959+1300, 635))
 
         hitboxes = {"walls": [
-
+            pg.Rect(1635, 0, 20, 1080),
+            pg.Rect(2100, 0, 20, 1080),
+            pg.Rect(1605, 40, interior_wall_texture.get_width()*2, interior_wall_texture.get_height()-75),
+            pg.Rect(1605, 1020, 900, 30)
         ]}
     
     return level_surface, hitboxes
@@ -599,7 +602,7 @@ def build_furniture(direction, current_level):
                     False,
                     '3',
                     'door',
-                    4,
+                    5,
                     'lock',
                     (2010, 325),
                     "shelf_3",
@@ -704,7 +707,8 @@ def build_furniture(direction, current_level):
                     'lock',
                     (1910, 325),
                     "shelf_3",
-                    '10' # key is in room id 2
+                    '10', # key is in room id 2
+                    'a'
                 ]
             }
 
@@ -869,12 +873,14 @@ items_with_notesD = {
 items_with_notesS = {
     "item_note7": Note(screen, "00110111 01000001 00100000 00110110 01000110 00100000 00110110 00110111 00100000 00110110 00111000 00100000 00110010 00110000 00100000 00110010 01000100 00100000 00110010 00110000 00100000 00110110 00110110 00100000 00110111 00110111 00100000 00110111 00110101 00100000 00110111 00110110 00100000 00110110 00111000"),
     "hidden_note7": Note(screen, "Only UP - is a game where while you are playing, you might just sell your pc to the window."),
-    "item_note8": Note(screen, "Try to press left-arrow key now.\n\n\n\n\n\t\t\t\tCOME ON! ESCAPE NOW!!!\n\nGrap the key in the tutorial room. And please hurry up unitll they get there!!")
+    "item_note8": Note(screen, "Try to press left-arrow key now.\n\n\n\n\n\t\t\t\tCOME ON! ESCAPE NOW!!!\n\nGrap the key in the tutorial room. And please hurry up unitll they get there!!"),
+    "hidden_note2": Note(screen, "Literally changed my UI to German everywhere.")
 }
 
 items_with_notesA = {
     "hidden_note7": Note(screen, "Only UP - is a game where while you are playing, you might just sell your pc to the window."),
-    "item_note8": Note(screen, "Try to press left-arrow key now.\n\n\n\n\n\t\t\t\tCOME ON! ESCAPE NOW!!!\n\nGrap the key in the tutorial room. And please hurry up unitll they get there!!")
+    "item_note8": Note(screen, "Try to press left-arrow key now.\n\n\n\n\n\t\t\t\tCOME ON! ESCAPE NOW!!!\n\nGrap the key in the tutorial room. And please hurry up unitll they get there!!"),
+    "hidden_note2": Note(screen, "Literally changed my UI to German everywhere.")
 }
 
 # --- Debug: draw all hitboxes ---
@@ -911,7 +917,7 @@ current_drawer = None
 current_door_avail = False
 
 # other stuff
-taken_items = ['10']
+taken_items = []
 used_items = []
 hidden_notes = [
     # ('hidden_note1', [pg.Rect(furniture_hitboxes['shelf_2'][5][0]-105, furniture_hitboxes['shelf_2'][5][1]-100, 250, 200)]) # And it's also has to be here.
