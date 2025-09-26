@@ -412,6 +412,7 @@ key_image = pg.image.load('sprites/key.png').convert_alpha()
 lock = pg.image.load('sprites/lock.png').convert_alpha()
 note = Note(screen, 'test note')
 note_item = pg.image.load('sprites/note_item.png')
+portal_image = pg.image.load("sprites/portal.png")
 
 def build_furniture(direction, current_level):
     note_item = pg.image.load('sprites/note_item.png')
@@ -728,6 +729,16 @@ def build_furniture(direction, current_level):
                 3
             ]
         }
+    elif current_level == 5:
+        furniture_surface = pg.Surface((2000, 1080), pg.SRCALPHA)
+        
+        furniture_surface.blit(portal_image, (1800, 500))
+
+        furniture_hitboxes = {
+            "portal": [
+                pg.Rect(1750, 450, 100, 100)
+            ]
+        }
 
     return furniture_surface, furniture_hitboxes
 
@@ -823,7 +834,7 @@ def build_items(direction, current_level):
             items_surface.blit(note_item, (2500, 500))
             
             items_hitboxes = {
-                "item_note6": [pg.Rect(2370, 420, 250, 200)]
+                "item_note9": [pg.Rect(2370, 420, 250, 200)]
             }
         if direction == 'a':
             
@@ -857,7 +868,7 @@ items_with_notesW = {
     "item_note4": Note(screen, "Well, at first, i wanted to make this thing work. But eventually this is shit idea cuz it takes too much RAM. So please play with that :("),
     "item_note5": Note(screen, "Ебать - Черный квадрат МаЛЕВичО!!<br>(ya znayu chto eto ne on)"),
     "hidden_note2": Note(screen, "Literally changed my UI to German everywhere."),
-    "item_note6": Note(screen, "You got the dud hahahah :)\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\t\t\t\tQUICK"),
+    "item_note9": Note(screen, "You got the dud hahahah :)\n\n\n\n\n\n\n\n\n\n\n\n\t\t\t\t\t\t\t\tQUICK"),
     "hidden_note7": Note(screen, "Only UP - is a game where while you are playing, you might just sell your pc to the window."), # FIRST DIRECTION
     "item_note8": Note(screen, "Try to press left-arrow key now.\n\n\n\n\n\t\t\t\tCOME ON! ESCAPE NOW!!!\n\nGrap the key in the tutorial room. And please hurry up unitll they get there!!")
 }
@@ -974,10 +985,10 @@ while running:
             if not door_availiability and len(obj) > 7:
                 binded_item_id = obj[10]
 
-                print(f"Debug in CDA:\n\tbinded_item_id: {binded_item_id}\n\tbinded_item_id in taken_items: {binded_item_id in taken_items}\n\ttaken_items: {taken_items}\n")
+                # print(f"Debug in CDA:\n\tbinded_item_id: {binded_item_id}\n\tbinded_item_id in taken_items: {binded_item_id in taken_items}\n\ttaken_items: {taken_items}\n")
 
                 if binded_item_id in taken_items:
-                    print("setting door_availiavility to true for the key event logic")
+                    # print("Debug in CCD logic: setting door_availiavility to true for the key event logic")
                     door_availability = True
                     current_door_avail = True
                     break
@@ -1015,7 +1026,7 @@ while running:
                     if e.key == pg.K_LEFT and dir_a_avail:
                         current_direction = 'a'
             elif current_direction == 'd':
-                if not any(note.check_opened() for note in items_with_notesW.values()):
+                if not any(note.check_opened() for note in items_with_notesD.values()):
                     if e.key == pg.K_w: player_upM = True
                     if e.key == pg.K_a:
                         player_leftM = True
@@ -1033,7 +1044,7 @@ while running:
                     if e.key == pg.K_LEFT and dir_a_avail:
                         current_direction = 'a'
             elif current_direction == 's':
-                if not any(note.check_opened() for note in items_with_notesW.values()):
+                if not any(note.check_opened() for note in items_with_notesS.values()):
                     if e.key == pg.K_w: player_upM = True
                     if e.key == pg.K_a:
                         player_leftM = True
@@ -1051,7 +1062,7 @@ while running:
                     if e.key == pg.K_LEFT and dir_a_avail:
                         current_direction = 'a'
             elif current_direction == 'a':
-                if not any(note.check_opened() for note in items_with_notesW.values()):
+                if not any(note.check_opened() for note in items_with_notesA.values()):
                     if e.key == pg.K_w: player_upM = True
                     if e.key == pg.K_a:
                         player_leftM = True
