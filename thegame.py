@@ -1,5 +1,5 @@
 import pygame as pg
-import sys, re, textwrap
+import sys, re, textwrap, requests
 
 class Note:
     def __init__(self, screen, text, font=None, title="Note", color=(20, 20, 20), panel_color=(245, 245, 220)):
@@ -214,7 +214,13 @@ def portal_logic(save_player=True, data_from_request="SOME_SECRET_DATA_FROM_POST
     return surf
 
 def get_data_from_server():
-    pass
+    try:
+        req_text = open("./answer.txt", "r", encoding="utf-8").read().strip()
+    except FileNotFoundError:
+        req_text = "File answer.txt not found."
+
+    r = requests.post("http://127.0.0.1:8000", data={"answer": req_text})
+    return r.text
 
 # --- Initialize Pygame ---
 pg.init()
@@ -1467,7 +1473,8 @@ while running:
         if key == "portal":
             portal_hitbox = obj[0]
             if player_hitbox.colliderect(portal_hitbox.move(level_x, level_y)):
-                portal_surf = portal_logic(True, "aaa")
+                req_text = get_data_from_server()
+                portal_surf = portal_logic(True, req_text)
                 portal_rect = portal_surf.get_rect(midtop=(screen.get_width() // 2, 0))
                 screen.blit(portal_surf, portal_rect)
 
