@@ -1,4 +1,5 @@
 import pygame as pg
+import sys, re, textwrap
 
 class Note:
     def __init__(self, screen, text, font=None, title="Note", color=(20, 20, 20), panel_color=(245, 245, 220)):
@@ -170,6 +171,51 @@ class SpriteAnimator:
         rect.midbottom = (x + rect.width // 2, y + self.base_rect.height)
         return rect.inflate(-rect.width * shrink, -rect.height * shrink)
 
+# Portal logic
+def portal_logic(save_player=True, data_from_request="SOME_SECRET_DATA_FROM_POST"):
+    font = pg.font.SysFont(None, 28)
+
+    # --- read + normalize ---
+    try:
+        content = open("./answer.txt", "r", encoding="utf-8").read().strip()
+    except FileNotFoundError:
+        content = ""
+
+    normalized = content.lower().replace(" ", "")
+    valid = False
+
+    if normalized == "uldr":   # up-left-down-right
+        valid = True
+    else:
+        seq = re.sub(r'[^a-z]', '', normalized)
+        for word, ch in [("up","u"),("down","d"),("left","l"),("right","r")]:
+            seq = seq.replace(word, ch)
+        if seq == "uldr":
+            valid = True
+
+    # --- choose message ---
+    if save_player and valid:
+        msg = f"Your answer is correct. Here is your data: {data_from_request}"
+    else:
+        msg = "Please press ESC to leave the game, and create an answer.txt where the content should be"
+
+    # --- wrap text into lines ---
+    wrapped = textwrap.wrap(msg, width=60)
+
+    # --- render to surface ---
+    width, height = 1000, 80 + 25 * len(wrapped)
+    surf = pg.Surface((width, height))
+    surf.fill((30, 30, 30))
+
+    for i, line in enumerate(wrapped):
+        text_surface = font.render(line, True, (255, 255, 255))
+        surf.blit(text_surface, (20, 20 + i * 30))
+
+    return surf
+
+def get_data_from_server():
+    pass
+
 # --- Initialize Pygame ---
 pg.init()
 screen = pg.display.set_mode((1920, 1080), pg.FULLSCREEN)
@@ -246,7 +292,7 @@ notes_open = False
 toggled = False
 
 # --- Load textures ---
-current_level = 0
+current_level = 5
 house_wall_texture = pg.image.load("sprites/house_wall_texture_exterior.png")
 house_wall_texture = pg.transform.scale(house_wall_texture, (house_wall_texture.get_width()*6, house_wall_texture.get_height()*6))
 interior_wall_texture = pg.image.load("sprites/interior_wall_texture.png")
@@ -384,7 +430,30 @@ def build_level(current_level, current_direction):
             pg.Rect(1605, 40, interior_wall_texture.get_width()*2, interior_wall_texture.get_height()-75),
             pg.Rect(1605, 1020, 900, 30)
         ]}
-    
+
+    elif current_level == 5:
+        level_surface = pg.Surface((1920+2575, 1080))
+
+        level_surface.blit(interior_wall_texture, (305+1000, 40))
+        level_surface.blit(interior_wall_texture, (929+1000, 40))
+
+        level_surface.blit(house_floor_texture, (329+1000, 424))
+        level_surface.blit(house_floor_texture, (947+1000, 424))
+        level_surface.blit(house_floor_texture, (959+1000, 424))
+        level_surface.blit(house_floor_texture, (329+1000, 635))
+        level_surface.blit(house_floor_texture, (947+1000, 635))
+        level_surface.blit(house_floor_texture, (959+1000, 635))
+
+        hitboxes = {
+            "walls": [
+                pg.Rect(929+1000, 40, interior_wall_texture.get_width(), interior_wall_texture.get_height()-75),
+                pg.Rect(305+1000, 40, interior_wall_texture.get_width(), interior_wall_texture.get_height()-75),
+                pg.Rect(1000, 850, 2200, 20),
+                # pg.Rect(310+1000, 200, 20, 900),
+                pg.Rect(1575+1000, 300, 200, interior_wall_texture.get_height()+200)
+            ]
+        }
+
     return level_surface, hitboxes
 
 level_surface, hitboxes = build_level(current_level, 'w')
@@ -413,6 +482,7 @@ lock = pg.image.load('sprites/lock.png').convert_alpha()
 note = Note(screen, 'test note')
 note_item = pg.image.load('sprites/note_item.png')
 portal_image = pg.image.load("sprites/portal.png")
+portal_image = pg.transform.scale(portal_image, (portal_image.get_width()*3, portal_image.get_height()*3))
 
 def build_furniture(direction, current_level):
     note_item = pg.image.load('sprites/note_item.png')
@@ -730,13 +800,13 @@ def build_furniture(direction, current_level):
             ]
         }
     elif current_level == 5:
-        furniture_surface = pg.Surface((2000, 1080), pg.SRCALPHA)
+        furniture_surface = pg.Surface((2500, 1080), pg.SRCALPHA)
         
         furniture_surface.blit(portal_image, (1800, 500))
 
         furniture_hitboxes = {
             "portal": [
-                pg.Rect(1750, 450, 100, 100)
+                pg.Rect(1750, 450, 425, 350)
             ]
         }
 
@@ -857,6 +927,10 @@ def build_items(direction, current_level):
         items_hitboxes = {
             "item_note8": [pg.Rect(1720, 720, 250, 200)]
         }
+    
+    elif current_level == 5:
+        items_surface = pg.Surface((1, 1), pg.SRCALPHA)
+        items_hitboxes = {}
 
     return items_surface, items_hitboxes
 
@@ -902,9 +976,9 @@ def draw_debug_hitboxes():
         pg.draw.rect(screen, (255, 0, 0), moved_wall, 2)
 
     # furniture = blue
-    for obj_list in furniture_hitboxes.values():
+    for key, obj_list in furniture_hitboxes.items():
         moved_obj = obj_list[0].move(level_x, level_y)
-        if obj_list[5] != 'door':
+        if key.startswith("shelf"):
             moved_obj1 = obj_list[1].move(level_x, level_y)
             pg.draw.rect(screen, (0, 0, 255), moved_obj1, 2)
         pg.draw.rect(screen, (0, 0, 255), moved_obj, 2)
@@ -935,7 +1009,7 @@ hidden_notes = [
     ("hidden_note2", [pg.Rect(775, 320, 250, 200)]),
     ("hidden_note7", [pg.Rect(775, 320, 250, 200)])
 ]
-level_list = [0, 1, 2, 3, 4]
+level_list = [0, 1, 2, 3, 4, 5]
 
 # --- Player state ---
 player_x, player_y = 900, 480
@@ -957,8 +1031,8 @@ while running:
 
     # First, put all hidden notes into items_hitboxes
     for key, hitbox in hidden_notes:
-        for obj in furniture_hitboxes.values():
-            if obj[5] != 'door' and len(obj) > 12:
+        for key, obj in furniture_hitboxes.items():
+            if key.startswith("door") and len(obj) > 12:
                 if key == obj[14]:
                     if checking_drawer:
                         items_hitboxes[key] = hitbox
@@ -968,7 +1042,7 @@ while running:
     # Then handle the drawer check
     for key, obj in furniture_hitboxes.items():
         checking_drawer = False
-        if not key.startswith("door"):
+        if key.startswith("shelf"):
             m_collision = obj[1].move(level_x, level_y).collidepoint(mpos)
 
             # print(f"Debug in CCD logic:\n\tmouse collision: {m_collision}\n\tchecking_drawer: {checking_drawer}\n\tRect: {obj[1]}\n\tFurniture hitboxes length: {len(furniture_hitboxes)}\n\n\tWhole object: {obj}\n")
@@ -994,6 +1068,7 @@ while running:
                     break
 
                 current_door_avail = False
+    
 
         # print(f"Current door: {key}")
 
@@ -1135,7 +1210,7 @@ while running:
 
 
     scroll_speed = 5
-
+    
     # --- Edge checks and scrolling ---
     reached_edge_right = player_x >= 1460 - player_anim.get_frame().get_width()
     reached_edge_left  = player_x <= 460
@@ -1205,8 +1280,8 @@ while running:
     #             player_x = prev_x
     #             break
 
-    for obj_list in furniture_hitboxes.values():
-        if obj_list[5] != 'door':
+    for key, obj_list in furniture_hitboxes.items():
+        if key.startswith("shelf"):
             moved_obj = obj_list[0].move(level_x, level_y)
             moved_obj1 = obj_list[1].move(level_x, level_y)
             if player_hitbox.colliderect(moved_obj):
@@ -1238,8 +1313,8 @@ while running:
     #             player_y = prev_y
     #             break
 
-    for obj_list in furniture_hitboxes.values():
-        if obj_list[5] != 'door':
+    for key, obj_list in furniture_hitboxes.items():
+        if key.startswith("shelf"):
             moved_obj = obj_list[0].move(level_x, level_y)
             moved_obj1 = obj_list[1].move(level_x, level_y)
             if player_hitbox.colliderect(moved_obj):
@@ -1247,8 +1322,8 @@ while running:
                 break
 
     # open up that drawer
-    for obj in furniture_hitboxes.values():
-        if obj[5] != 'door':
+    for key, obj in furniture_hitboxes.items():
+        if key.startswith("shelf"):
             # storing those objects for easier readability
             drawer_hitbox = obj[1]
             opened_image = obj[2]
@@ -1332,8 +1407,8 @@ while running:
                         lock_logic(furniture_hitboxes, lock_name, key_name, binded_item_id)
                     
         # open the dooooor
-        for obj in furniture_hitboxes.values():
-            if obj[5] == 'door':
+        for key, obj in furniture_hitboxes.items():
+            if key.startswith("door"):
                 door_hitbox = obj[0]
                 opened_door_image = obj[1]
                 opened_door_pos = obj[2]
@@ -1386,6 +1461,16 @@ while running:
         for note in items_with_notesA.values():
             if note.check_opened():
                 note.draw()
+
+    # Draw at the top center of the screen, always fixed
+    for key, obj in furniture_hitboxes.items():
+        if key == "portal":
+            portal_hitbox = obj[0]
+            if player_hitbox.colliderect(portal_hitbox.move(level_x, level_y)):
+                portal_surf = portal_logic(True, "aaa")
+                portal_rect = portal_surf.get_rect(midtop=(screen.get_width() // 2, 0))
+                screen.blit(portal_surf, portal_rect)
+
     pg.display.flip()
 
 pg.quit()
