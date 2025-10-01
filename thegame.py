@@ -225,6 +225,7 @@ def get_data_from_server():
 # --- Initialize Pygame ---
 pg.init()
 screen = pg.display.set_mode((1920, 1080), pg.FULLSCREEN)
+pg.display.set_caption("Never thought about how to call this game")
 clock = pg.time.Clock()
 
 # --- Usage Tutorial ---
@@ -1450,7 +1451,7 @@ while running:
     screen.blit(items_surface, (level_x, level_y))
     current_anim = player_walk_anim if (player_upM or player_leftM or player_downM or player_rightM) else player_anim
     current_anim.draw(screen, player_x, player_y, flip_x=player_flipped)
-    draw_debug_hitboxes()
+    # draw_debug_hitboxes()
     if current_direction == 'w':
         for note in items_with_notesW.values():
             if note.check_opened():
