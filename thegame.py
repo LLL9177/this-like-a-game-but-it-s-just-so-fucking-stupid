@@ -299,7 +299,7 @@ notes_open = False
 toggled = False
 
 # --- Load textures ---
-current_level = 5
+current_level = 1
 house_wall_texture = pg.image.load("sprites/house_wall_texture_exterior.png")
 house_wall_texture = pg.transform.scale(house_wall_texture, (house_wall_texture.get_width()*6, house_wall_texture.get_height()*6))
 interior_wall_texture = pg.image.load("sprites/interior_wall_texture.png")
@@ -1037,12 +1037,14 @@ while running:
     mpos = pg.mouse.get_pos()
 
     # First, put all hidden notes into items_hitboxes
-    for key, hitbox in hidden_notes:
+    for hitbox in hidden_notes:
         for key, obj in furniture_hitboxes.items():
-            if key.startswith("door") and len(obj) > 12:
-                if key == obj[14]:
+            print(obj)
+            if key.startswith("shelf") and len(obj) > 12:
+                if hitbox[0] == obj[14]:
+                    print("executing...")
                     if checking_drawer:
-                        items_hitboxes[key] = hitbox
+                        items_hitboxes[hitbox[0]] = hitbox[1]
                     else:
                         items_hitboxes.pop(key, None)
 
@@ -1207,6 +1209,8 @@ while running:
                             if key in items_with_notesA:
                                 items_with_notesA[key].toggle()
 
+                        print(f"Debug in ON logic:\n\tW: {key in items_with_notesW};\n\tD: {key in items_with_notesD};\n\tS: {key in items_with_notesS};\n\tA: {key in items_with_notesA}")
+
                         break  # stop after first hit
 
         if e.type == pg.KEYUP:
@@ -1367,7 +1371,7 @@ while running:
                 if binded_item_id in taken_items:
                     item_availability = True
             
-            # uh don't even ask me what this is. It works, be glad.
+            # uh don't even ask me what this is. It works, nothing else matters.
             if mouse_collision and item_availability and item_id not in used_items:
                 checking_drawer = True
 
@@ -1379,8 +1383,8 @@ while running:
                     note_link = obj[14]
 
                     if not checking_drawer:
-                        items_hitboxes.pop(f"hidden_note{item_id}")
-                        hidden_notes.pop(f"hidden_note{item_id}")
+                        items_hitboxes.pop(f"hidden_note{item_id}", None)
+                        hidden_notes.pop(f"hidden_note{item_id}", None)
 
                     if current_direction == 'w':
                         note_instance = items_with_notesW[f"hidden_note{item_id}"]
@@ -1451,7 +1455,7 @@ while running:
     screen.blit(items_surface, (level_x, level_y))
     current_anim = player_walk_anim if (player_upM or player_leftM or player_downM or player_rightM) else player_anim
     current_anim.draw(screen, player_x, player_y, flip_x=player_flipped)
-    # draw_debug_hitboxes()
+    draw_debug_hitboxes()
     if current_direction == 'w':
         for note in items_with_notesW.values():
             if note.check_opened():
